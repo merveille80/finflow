@@ -1,0 +1,658 @@
+.landing-container {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-primary);
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 1. Technological Dot Grid Overlay */
+.landing-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  z-index: 1;
+  pointer-events: none;
+}
+/* Completely hide grid in Light Theme for Pure UI */
+.landing-container.light-theme .landing-grid-overlay {
+  display: none !important;
+}
+
+/* 2. Floating Glow Orbs (Cosmic Background) */
+.landing-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.65;
+  transition: all 0.5s ease;
+}
+
+.orb-orange {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(255, 81, 0, 0.16) 0%, rgba(255, 81, 0, 0) 70%);
+  top: -10%;
+  left: -5%;
+  animation: floatOrb 22s infinite ease-in-out alternate;
+}
+
+.orb-white {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+  bottom: 10%;
+  right: 5%;
+  animation: floatOrb 28s infinite ease-in-out alternate-reverse;
+}
+
+/* Hide Orbs in Light Theme for Pure Minimalist Look */
+.landing-container.light-theme .landing-glow-orb {
+  opacity: 0 !important;
+  display: none !important;
+}
+
+.orb-gold {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 183, 0, 0.08) 0%, rgba(255, 183, 0, 0) 70%);
+  top: 35%;
+  left: 40%;
+  animation: floatOrb 18s infinite ease-in-out alternate;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -60px) scale(1.08); }
+  100% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
+.floating-assets-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.floating-asset {
+  position: absolute;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+  transition: all 0.3s ease;
+}
+
+/* Keyframe for 3D-like floating motion */
+@keyframes floatAsset1 {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes floatAsset2 {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(18px) rotate(-4deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes floatAsset3 {
+  0% { transform: translateY(0px) scale(1) rotate(0deg); }
+  50% { transform: translateY(-20px) scale(1.03) rotate(-3deg); }
+  100% { transform: translateY(0px) scale(1) rotate(0deg); }
+}
+
+/* Position of Assets */
+.asset-lightning {
+  width: 90px;
+  height: 90px;
+  top: 18%;
+  left: 10%;
+  animation: floatAsset1 12s infinite ease-in-out;
+  opacity: 0.8;
+}
+
+.asset-squiggle {
+  width: 150px;
+  height: 60px;
+  top: 15%;
+  left: 45%;
+  animation: floatAsset2 16s infinite ease-in-out;
+  opacity: 0.6;
+}
+
+.asset-coin {
+  width: 110px;
+  height: 110px;
+  top: 20%;
+  right: 12%;
+  animation: floatAsset3 14s infinite ease-in-out;
+}
+
+.asset-target {
+  width: 120px;
+  height: 120px;
+  bottom: 12%;
+  right: 8%;
+  animation: floatAsset1 18s infinite ease-in-out;
+}
+
+/* 3D Glass Credit Card Asset */
+.asset-card {
+  width: 250px;
+  height: 150px;
+  bottom: 18%;
+  left: 8%;
+  animation: floatAsset2 20s infinite ease-in-out;
+  perspective: 1000px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 81, 0, 0.35) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+              inset 0 1px 0 rgba(255,255,255,0.2);
+  color: #fff;
+  transform: rotateY(15deg) rotateX(10deg);
+}
+
+.landing-container.light-theme .card-inner {
+  background: linear-gradient(135deg, rgba(255, 81, 0, 0.15) 0%, rgba(15, 23, 42, 0.05) 100%);
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #0f172a;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15),
+              inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.card-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.card-chip {
+  width: 32px;
+  height: 24px;
+  background: linear-gradient(135deg, #ffb700, #ff5100);
+  border-radius: 4px;
+  margin-top: 10px;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+}
+
+.card-number {
+  font-size: 14px;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  margin-top: 12px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.card-holder {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.7);
+}
+
+.landing-container.light-theme .card-holder {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+.card-brand {
+  width: 28px;
+  height: 18px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+}
+
+.landing-container.light-theme .card-brand {
+  background: rgba(15, 23, 42, 0.15);
+}
+
+/* 4. Landing Header Style */
+.landing-header {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 70px;
+  background: rgba(13, 13, 17, 0.45) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 20px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.landing-container.light-theme .landing-header {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
+}
+
+.landing-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 81, 0, 0.15);
+}
+
+.landing-logo h2 {
+  font-size: 20px;
+  font-weight: 850;
+  letter-spacing: -0.6px;
+}
+
+.landing-logo h2 span {
+  color: var(--accent);
+}
+
+.landing-nav {
+  display: flex;
+  gap: 32px;
+}
+
+.landing-nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.landing-nav a:hover {
+  color: var(--accent);
+}
+
+.landing-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Theme Toggle Button Style */
+.theme-switcher-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.landing-container.light-theme .theme-switcher-btn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.theme-switcher-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+.theme-switcher-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Pill Connexion Button (Matches the reference pill CTA) */
+.btn-connexion-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 30px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.landing-container.light-theme .btn-connexion-pill {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.15);
+}
+
+.btn-connexion-pill:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px rgba(255, 81, 0, 0.25);
+}
+
+/* 5. Hero Central Section (Layout match with uploaded image) */
+.landing-hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 180px 24px 100px 24px;
+  min-height: 85vh;
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-pill-category {
+  background: rgba(255, 81, 0, 0.08);
+  border: 1px solid rgba(255, 81, 0, 0.15);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: pulsePill 3s infinite alternate;
+}
+
+@keyframes pulsePill {
+  0% { box-shadow: 0 0 0 rgba(255, 81, 0, 0); }
+  100% { box-shadow: 0 0 12px rgba(255, 81, 0, 0.15); }
+}
+
+.hero-main-title {
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -2px;
+  color: var(--text-primary);
+  margin-bottom: 28px;
+}
+
+.hero-main-title span {
+  background: linear-gradient(135deg, var(--accent), #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Pure minimalist sharp dark text in Light Theme */
+.landing-container.light-theme .hero-main-title span {
+  background: none;
+  color: #0f172a;
+  -webkit-text-fill-color: #0f172a;
+}
+
+.hero-sub-description {
+  font-size: 17.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 760px;
+  margin-bottom: 40px;
+}
+
+/* Translucent Pill CTA Button (Direct match with "Full Article" button in image) */
+.hero-cta-btn-wrapper {
+  perspective: 500px;
+}
+
+.btn-hero-cta {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 40px;
+  padding: 16px 36px;
+  font-size: 15.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.landing-container.light-theme .btn-hero-cta {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+}
+
+.btn-hero-cta:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 15px 35px rgba(255, 81, 0, 0.3);
+}
+
+/* 6. FinFlow Features Section */
+.landing-features-section {
+  padding: 100px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.section-title-wrapper {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.section-subtitle {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-size: 34px;
+  font-weight: 850;
+  letter-spacing: -1px;
+  margin-top: 6px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 81, 0, 0.25) !important;
+  box-shadow: 0 20px 40px rgba(255, 81, 0, 0.04), var(--shadow) !important;
+}
+
+.feature-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 81, 0, 0.08);
+  border: 1px solid rgba(255, 81, 0, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.feature-card h3 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.4px;
+}
+
+.feature-card p {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.feature-icon-wrapper svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 7. Security Banner Card */
+.landing-quote-section {
+  padding: 80px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.quote-card {
+  padding: 60px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-radius: 24px !important;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.quote-card p {
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.quote-card span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* 8. Footer Banner */
+.landing-footer-banner {
+  padding: 60px 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  z-index: 10;
+  margin-top: auto;
+  background: rgba(13, 13, 17, 0.25);
+}
+
+.landing-container.light-theme .landing-footer-banner {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 850;
+  font-size: 15px;
+}
+
+.logo-icon-sm {
+  width: 22px;
+  height: 22px;
+  background: rgba(255, 81, 0, 0.08);
+  border: 1px solid rgba(255, 81, 0, 0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-copyright {
+  font-size: 12.5px;
+  color: var(--text-light);
+}
+
+/* Responsiveness adjustments */
+@media (max-width: 768px) {
+  .hero-main-title {
+    font-size: 38px;
+    letter-spacing: -1px;
+  }
+  .hero-sub-description {
+    font-size: 15px;
+  }
+  .landing-nav {
+    display: none;
+  }
+  .landing-header {
+    padding: 0 16px;
+  }
+  .floating-asset {
+    opacity: 0.25 !important; /* Mute them slightly on smaller screens */
+  }
+  .asset-card {
+    display: none; /* Hide complex 3D card on mobile */
+  }
+}

@@ -1,0 +1,113 @@
+.convert-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.convert-input-group {
+  margin-bottom: 16px;
+}
+
+.convert-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.convert-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.convert-input-wrapper input {
+  flex: 1;
+  padding: 12px 14px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-weight: 600;
+  background: transparent;
+}
+
+.convert-currency-select {
+  padding: 8px 14px;
+  background: var(--bg-primary);
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.convert-swap {
+  display: flex;
+  justify-content: center;
+  margin: -8px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.swap-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.swap-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.swap-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.convert-result {
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.convert-result-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.convert-result-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.convert-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.convert-btn:hover {
+  background: var(--accent-hover);
+}
