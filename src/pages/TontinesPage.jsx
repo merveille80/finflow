@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import './TontinesPage.css'
 
+const API = 'http://127.0.0.1:3001/api'
+
 export default function TontinesPage({ user }) {
   const [tontines, setTontines] = useState([])
   const [selectedTontine, setSelectedTontine] = useState(null)
   const [members, setMembers] = useState([])
+  const [payments, setPayments] = useState([])
   const [loading, setLoading] = useState(true)
+  const [payingId, setPayingId] = useState(null)
 
   // Modals state
   const [showNewTontineModal, setShowNewTontineModal] = useState(false)
@@ -18,11 +22,12 @@ export default function TontinesPage({ user }) {
 
   const fetchTontines = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/api/tontines?user_id=${user.id}`)
+      const res = await fetch(`${API}/tontines?user_id=${user.id}`)
       const data = await res.json()
-      setTontines(data)
+      setTontines(Array.isArray(data) ? data : [])
     } catch (err) {
       console.error(err)
+      setTontines([])
     } finally {
       setLoading(false)
     }
@@ -30,9 +35,12 @@ export default function TontinesPage({ user }) {
 
   const fetchMembers = async (tontineId) => {
     try {
-      const res = await fetch(`http://127.0.0.1:3001/api/tontines/${tontineId}/members`)
-      const data = await res.json()
-      setMembers(data)
+      const [membersRes, paymentsRes] = await Promise.all([
+        fetch(`${API}/tontines/${tontineId}/members`).then(r => r.json()),
+        fetch(`${API}/tontines/${tontineId}/payments`).then(r => r.json()),
+      ])
+      setMembers(Array.isArray(membersRes) ? membersRes : [])
+      setPayments(Array.isArray(paymentsRes) ? paymentsRes : [])
     } catch (err) {
       console.error(err)
     }
@@ -46,7 +54,7 @@ export default function TontinesPage({ user }) {
   const handleCreateTontine = async (e) => {
     e.preventDefault()
     try {
-      const res = await fetch('http://127.0.0.1:3001/api/tontines', {
+      const res = await fetch(`${API}/tontines`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, user_id: user.id })
@@ -64,7 +72,7 @@ export default function TontinesPage({ user }) {
   const handleAddMember = async (e) => {
     e.preventDefault()
     try {
-      const res = await fetch(`http://127.0.0.1:3001/api/tontines/${selectedTontine.id}/members`, {
+      const res = await fetch(`${API}/tontines/${selectedTontine.id}/members`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, payout_turn: members.length + 1 })
@@ -79,50 +87,134 @@ export default function TontinesPage({ user }) {
     }
   }
 
+  // Enregistre le paiement d'un membre pour le tour actuel
+  const handlePayMember = async (memberId) => {
+    const currentRound = Math.floor(payments.length / members.length) + 1
+    setPayingId(memberId)
+    try {
+      const res = await fetch(`${API}/tontines/${selectedTontine.id}/payments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          member_id: memberId,
+          amount: selectedTontine.cycle_amount,
+          round_number: currentRound
+        })
+      })
+      if (res.ok) {
+        await fetchMembers(selectedTontine.id)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setPayingId(null)
+    }
+  }
+
+  // Vérifie si un membre a déjà payé pour le tour actuel
+  const hasPaidThisRound = (memberId) => {
+    if (members.length === 0) return false
+    const currentRound = Math.floor(payments.length / members.length) + 1
+    return payments.some(p => p.member_id === memberId && p.round_number === currentRound)
+  }
+
+  // Trouve le membre qui doit "bouffer" (recevoir) la cagnotte ce tour
+  const getCurrentRecipient = () => {
+    if (members.length === 0) return null
+    const roundIndex = Math.floor(payments.filter((p, i, arr) =>
+      arr.findIndex(x => x.member_id === p.member_id && x.round_number === p.round_number) === i
+    ).length / members.length)
+    const recipientTurn = (roundIndex % members.length) + 1
+    return members.find(m => m.payout_turn === recipientTurn)
+  }
+
   if (loading) return <div>Chargement de vos tontines...</div>
 
   // Detail View
   if (selectedTontine) {
     const totalPot = selectedTontine.cycle_amount * members.length
-    
+    const currentRound = members.length > 0 ? Math.floor(payments.length / members.length) + 1 : 1
+    const recipient = getCurrentRecipient()
+    const paidCount = members.filter(m => hasPaidThisRound(m.id)).length
+
     return (
       <div className="tontine-page tontine-detail-view animate-fade-in">
         <button className="back-btn" onClick={() => setSelectedTontine(null)}>
           ← Retour aux Tontines
         </button>
 
+        {/* Main Pot Banner */}
         <div className="tontine-pot-banner">
-          <div className="pot-label">{selectedTontine.name} • Cagnotte du Tour</div>
-          <div className="pot-amount">{totalPot.toLocaleString()} {selectedTontine.currency}</div>
-          <div className="pot-sub">Cotisation: {selectedTontine.cycle_amount} {selectedTontine.currency} / {selectedTontine.frequency}</div>
+          <div className="pot-label">{selectedTontine.name} • Tour N°{currentRound}</div>
+          <div className="pot-amount">{totalPot.toLocaleString('fr-FR')} {selectedTontine.currency}</div>
+          <div className="pot-sub">
+            Cotisation: {selectedTontine.cycle_amount.toLocaleString('fr-FR')} {selectedTontine.currency} / {selectedTontine.frequency}
+            &nbsp;•&nbsp; {paidCount}/{members.length} cotisations reçues
+          </div>
         </div>
 
+        {/* Current Recipient Banner */}
+        {recipient && (
+          <div style={{
+            background: 'linear-gradient(135deg, #ffb700, #ff8c00)',
+            borderRadius: '16px',
+            padding: '20px 28px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            color: '#fff',
+            boxShadow: '0 8px 24px rgba(255,183,0,0.25)'
+          }}>
+            <div style={{ fontSize: '32px' }}>🏆</div>
+            <div>
+              <div style={{ fontSize: '12px', fontWeight: '700', opacity: 0.85, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Bénéficiaire du Tour {currentRound}
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '900', marginTop: '4px' }}>{recipient.name}</div>
+              <div style={{ fontSize: '13px', opacity: 0.85 }}>Encaisse {totalPot.toLocaleString('fr-FR')} {selectedTontine.currency} dès que tous ont cotisé</div>
+            </div>
+          </div>
+        )}
+
+        {/* Members List */}
         <div className="members-section">
           <div className="members-header">
-            <h3>Membres & Ordre de Passage</h3>
+            <h3>Membres & Cotisations — Tour {currentRound}</h3>
             <button className="btn-new-tontine" style={{ padding: '6px 12px', fontSize: '13px' }} onClick={() => setShowAddMemberModal(true)}>
               + Ajouter Membre
             </button>
           </div>
-          
+
           <div className="members-list">
             {members.length === 0 ? (
-              <p style={{ color: 'var(--text-secondary)' }}>Aucun membre dans cette tontine.</p>
+              <p style={{ color: 'var(--text-secondary)' }}>Aucun membre dans cette tontine. Ajoutez des membres pour commencer.</p>
             ) : (
-              members.map(m => (
-                <div className="member-item glass-card" key={m.id}>
-                  <div className="member-info">
-                    <div className="member-turn">{m.payout_turn}</div>
-                    <div>
-                      <div className="member-name">{m.name}</div>
-                      <div className="member-phone">{m.phone || 'Pas de numéro'}</div>
+              members.map(m => {
+                const paid = hasPaidThisRound(m.id)
+                const isRecipient = recipient && recipient.id === m.id
+                return (
+                  <div className="member-item glass-card" key={m.id} style={{
+                    borderLeft: isRecipient ? '3px solid #ffb700' : paid ? '3px solid #10b981' : '3px solid transparent'
+                  }}>
+                    <div className="member-info">
+                      <div className="member-turn" style={{ background: isRecipient ? 'rgba(255,183,0,0.15)' : 'rgba(255,107,0,0.1)', color: isRecipient ? '#ffb700' : 'var(--accent)' }}>
+                        {isRecipient ? '🏆' : m.payout_turn}
+                      </div>
+                      <div>
+                        <div className="member-name">{m.name}</div>
+                        <div className="member-phone">{m.phone || 'Pas de numéro'}</div>
+                      </div>
                     </div>
+                    <button
+                      className={`btn-pay ${paid ? 'paid' : ''}`}
+                      disabled={paid || payingId === m.id}
+                      onClick={() => !paid && handlePayMember(m.id)}
+                    >
+                      {payingId === m.id ? '⏳ En cours...' : paid ? '✅ Payé' : 'Marquer Payé'}
+                    </button>
                   </div>
-                  <button className="btn-pay" onClick={() => alert('Fonction de paiement au tour bientôt disponible!')}>
-                    Marquer Payé
-                  </button>
-                </div>
-              ))
+                )
+              })
             )}
           </div>
         </div>
